@@ -44,3 +44,31 @@ def has_cycle(graph):
 
 print(has_cycle(graph))        
 print(has_cycle(cyclic_graph))  
+
+def validate_graph(graph):
+    for node in graph:
+        for child in graph[node]:
+            if child not in graph:
+                return False
+    if has_cycle(graph):
+        return False
+    return True
+
+graph = {
+    "motivation": ["study_hours", "exam_score"],
+    "study_hours": ["exam_score"],
+    "exam_score": []
+}
+
+invalid_graph = {
+    "A": ["C"],
+    "B": []
+}
+cyclic_graph = {
+    "A": ["B"],
+    "B": ["C"],
+    "C": ["A"]
+}
+print(validate_graph(graph))          
+print(validate_graph(invalid_graph))  
+print(validate_graph(cyclic_graph))  
