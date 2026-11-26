@@ -22,6 +22,20 @@ def simulate(n,rng,intervention=None):
         "exam_score":exam_score
     })
 
+def compare_interventions(n, study_hours_values):
+    results = []
+    for hours in study_hours_values:
+        rng = np.random.default_rng(42)
+
+        data = simulate(n, rng, {"study_hours": hours})
+        avg_score = data["exam_score"].mean()
+
+        results.append({
+            "study_hours": hours,
+            "average_score": avg_score
+        })
+    return pd.DataFrame(results)
+
 # rng = np.random.default_rng(42)
 # motivation = generate_motivation(5, rng)
 # print(motivation)
@@ -56,3 +70,6 @@ print("Baseline mean:", baseline["exam_score"].mean())
 print("Intervention mean:", intervention_data["exam_score"].mean())
 effect = intervention_data["exam_score"].mean() - baseline["exam_score"].mean()
 print("Estimated effect:", effect)
+
+results = compare_interventions(1000, [6, 8, 10])
+print(results)
