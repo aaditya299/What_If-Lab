@@ -8,7 +8,10 @@ cyclic_graph = {
     "B": ["C"],
     "C": ["A"]
 }
-
+invalid_graph = {
+    "A": ["C"],
+    "B": []
+}
 
 def has_path(graph,start,target):
     if start==target:
@@ -17,10 +20,6 @@ def has_path(graph,start,target):
         if has_path(graph,child,target):
             return True
     return False
-print(has_path(graph, "motivation", "exam_score"))
-print(has_path(graph, "motivation", "study_hours"))
-print(has_path(graph, "study_hours", "motivation"))
-print(has_path(graph, "exam_score", "motivation"))
 
 def has_cycle(graph):
     visited=set()
@@ -40,10 +39,7 @@ def has_cycle(graph):
     for node in graph:
         if dfs(node):
             return True
-    return False
-
-print(has_cycle(graph))        
-print(has_cycle(cyclic_graph))  
+    return False 
 
 def validate_graph(graph):
     for node in graph:
@@ -54,21 +50,37 @@ def validate_graph(graph):
         return False
     return True
 
-graph = {
-    "motivation": ["study_hours", "exam_score"],
-    "study_hours": ["exam_score"],
-    "exam_score": []
-}
+def topological_sort(graph):
+    indegree={node:0 for node in graph}
+    for node in graph:
+        for child in graph[node]:
+            indegree[child]+=1
+    queue=[node for node,deg in indegree.items() if deg==0]
+    order=[]
+    while queue:
+        node=queue.pop(0)
+        order.append(node)
+        for child in graph[node]:
+            indegree[child]-=1
+            if indegree[child]==0:
+                queue.append(child)
+    if len(order)==len(graph):
+        return order
+    else:
+        return None
+    
 
-invalid_graph = {
-    "A": ["C"],
-    "B": []
-}
-cyclic_graph = {
-    "A": ["B"],
-    "B": ["C"],
-    "C": ["A"]
-}
+print(has_path(graph, "motivation", "exam_score"))
+print(has_path(graph, "motivation", "study_hours"))
+print(has_path(graph, "study_hours", "motivation"))
+print(has_path(graph, "exam_score", "motivation"))
+
+print(has_cycle(graph))        
+print(has_cycle(cyclic_graph)) 
+
 print(validate_graph(graph))          
 print(validate_graph(invalid_graph))  
 print(validate_graph(cyclic_graph))  
+
+print(topological_sort(graph))
+print(topological_sort(cyclic_graph))
